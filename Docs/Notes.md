@@ -234,5 +234,12 @@ In any case, once I found the solution, I made a function specifically for that 
 This gives us the benefit to be able to know if the cursor is at the bottom of the screen while in CMD.  
 Cause then I need to move the whole buffer one line up in order to show the spinners that take up 2 lines in height.  
 Again as I mentioned, this was working in WT and thus I could find if the cursor was currently at the bottom while using the\[console\] class, but was not working in CMD.
+<br><br>
 
+---
+### **Do not store string variables inside the while loop**
+The string datatype is immutable (which is a well known fact). Thus every time we create a new variable for a string, it gets stored in a different address memory. Now imagine if you have a while loop that loops every 40 milliseconds (that is the VeryFast option in the Speed parameter of Start-Spinner). That means it runs 25 times per second. And then assume that your task will take let's say 20 minutes. So there will be hundreds of loops till it finishes. Now imagine that you create 4 string variables on each loop which take up a few bytes. Lets say for the sake of this argument, its 25 characters per variable, and since these are unicode, then so a total of 400 bytes (4 variables x 25 characters x 4 bytes per character). Now, each time the loop starts over those bytes get added since strings are immutable. Which means if you run this lets say 30.000 times (for ex. each loop takes 40 milliseconds so that is 25 times per second, and the whole task takes 20 minutes, which results in 30.000 loops). So the total memory that those strings will take is 400 bytes x 30.000 times = 12MB for just that run of the spinner. So as you can imagine we do not want to take up so much memory space just to use our spinner.  
+Now what we can do, is run a Garbage Collection every so often, inside the while loop, so that the unused memory will be freed. Which means all the variables that we don't need anymore will get discarded. Though the thing is, that we cannot control how the garbage colection works so it's not guaranteed that .NET will free up our unused memory.
+Another way to solve that issue of course, is to just not use string variables at all inside our loop. Either use a StringBuilder, which is muttable, and thus we can re-write it. Or don't save any variables at all, and just show the end result directly.  
+Like for example use Write-Host and inside parenthesis put everything that we want to show. Instead of saving the text into a string variable and then using it like `Write-Host $output`.
 
