@@ -4,7 +4,7 @@
 
 @{
 RootModule        = 'Spinner.psm1'
-ModuleVersion     = '1.0.0'
+ModuleVersion     = '1.1.0'
 GUID              = '0b242b1e-b061-49a0-914d-dc9daa4f4617'
 Author            = 'Panos Grigoriadis'
 CompanyName       = 'No Company'
@@ -12,7 +12,7 @@ Copyright         = '(c) 2023 Panos Grigoriadis. All rights reserved.'
 Description       = 'Functions for progress bars.'
 PowerShellVersion = '7.3'
 RequiredModules   = @('ThreadJob')
-FunctionsToExport = 'Start-Spinner','Show-Spinner','Stop-SpinnerJob','Update-SpinnerJob','get-moduledata'
+FunctionsToExport = 'Start-Spinner','Show-Spinner','Stop-SpinnerJob','Update-SpinnerJob'
 #CmdletsToExport   = @()                     
 AliasesToExport   = ''
 PrivateData       = @{

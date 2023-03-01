@@ -22,12 +22,6 @@ param (
 )
 $PSDefaultParameterValues.'Write-Host:NoNewLine' = $true
 
-## Large icon sets work properly in Windows Terminal only
-if ($Type -like '*Large' -and -not [bool]$env:WT_SESSION) {
-    Write-Warning 'Unfortunately the large icon sets only work properly in Windows Terminal'
-    return
-}
-
 $HasStatus = $PSBoundParameters.ContainsKey('Status')
 if (-not $HasStatus) {
     $Status         = [System.Collections.Concurrent.ConcurrentDictionary[string,string]]::new()
@@ -50,25 +44,25 @@ if ($AsJob) {
 
 $Col   = Get-ColorSet $Color  # <-- $Col.Norm , $Col.Lite , $Col.Dark, $Col.None
 $Cur   = Get-CursorCode       # <-- all VT100 cursor escape sequences
-$PosY  = $Host.UI.RawUI.CursorPosition.Y         # <-- that's the next line after the execution of this function
+$PosY  = (Get-CursorPosition).Y
 $PosX  = $Activity.Length+1
 $Iset  = Get-IconSet $Type
 if ($Type -like '*Small') {
-    $ActivPos   = Set-CursorPosition 1     ($PosY+1)   # <-- the cursor position of the start of the Activity string
-    $StartLn1   = Set-CursorPosition $PosX ($PosY+1)
+    $ActivPos   = Set-CursorPosition 1     $PosY   # <-- the cursor position of the start of the Activity string
+    $StartLn1   = Set-CursorPosition $PosX $PosY
     $Icons      = $Iset.Line1
 }
 elseif ($Type -like '*Large') {
-    if ($PosY -ge ($Host.UI.RawUI.WindowSize.Height - 1)) {
+    if ($PosY -ge ($Host.UI.RawUI.WindowSize.Height - 0)) {
         Write-Host $Cur.ScrollUp
-        $ActivPos = Set-CursorPosition 1     ($PosY+1)
-        $StartLn1 = Set-CursorPosition $PosX ($PosY+0)
-        $StartLn2 = Set-CursorPosition $PosX ($PosY+1)
+        $ActivPos = Set-CursorPosition 1      $PosY
+        $StartLn1 = Set-CursorPosition $PosX ($PosY-1)
+        $StartLn2 = Set-CursorPosition $PosX  $PosY
     }
     else {
-        $ActivPos = Set-CursorPosition 1     ($PosY+2)
-        $StartLn1 = Set-CursorPosition $PosX ($PosY+1)
-        $StartLn2 = Set-CursorPosition $PosX ($PosY+2)
+        $ActivPos = Set-CursorPosition 1     ($PosY+1)
+        $StartLn1 = Set-CursorPosition $PosX  $PosY
+        $StartLn2 = Set-CursorPosition $PosX ($PosY+1)
     }
     $IconsLine1 = $Iset.Line1
     $IconsLine2 = $Iset.Line2

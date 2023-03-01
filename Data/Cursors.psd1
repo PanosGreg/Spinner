@@ -30,4 +30,5 @@
     Blink       = [char]27 + '[5m'
     NoBlink     = [char]27 + '[25m'
     Reset       = [char]27 + '[!p'
+    GetPosition = [char]27 + '[6n'  # <-- this will give the X,Y cursor position as an escape sequence
 }

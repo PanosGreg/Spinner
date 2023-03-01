@@ -40,7 +40,9 @@ namespace Spinner {
         Italic,
         NoItalic,
         Blink,
-        NoBlink
+        NoBlink,
+        Reset,
+        GetPosition
     }
 
     public enum Speed {

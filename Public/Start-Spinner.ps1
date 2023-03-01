@@ -8,8 +8,8 @@ function Start-Spinner {
     function Write-Something {
         [cmdletbinding()]
         param ()
-        Write-Verbose 'vvv' ; sleep 1 ; Write-Warning 'www' ; sleep 1
-        Write-Verbose 'VVV' ; sleep 1 ; Write-Warning 'WWW' ; sleep 1
+        Write-Verbose 'vvv' ; sleep 1 ; Write-Warning 'www' ; sleep 1 ; Write-Host 'nnn' ; Start-Sleep 1
+        Write-Verbose 'VVV' ; sleep 1 ; Write-Warning 'WWW' ; sleep 1 ; Write-Host 'NNN' ; Start-Sleep 1
         $out = [PSCustomObject] @{ Name='abcdef' ; Size = 10}
         Write-Output $out
     }
@@ -21,8 +21,8 @@ param (
     $CurrentStatus,
     [string]$ActivityTitle = (Get-RandomQuote),
     
-    [ValidateSet('VerboseOnly','WarningOnly','VerboseAndWarning')]
-    [string]$MessageType = 'VerboseAndWarning',
+    [ValidateSet('VerboseOnly','WarningOnly','VerboseAndWarning','InfoOnly','Any')]
+    [string]$MessageType = 'Any',
 
     [Spinner.ColorSet]$Color = 'Default',
     [Spinner.Speed]$Speed    = 'Medium',
@@ -30,15 +30,6 @@ param (
 )
 
 Begin {
-    # Large icon sets work properly in Windows Terminal only
-    if ($Type -like '*Large' -and -not [bool]$env:WT_SESSION) {
-        Write-Warning 'Unfortunately the large icon sets only work properly in Windows Terminal'
-        $Stop = $true
-        $All  = [System.Collections.Generic.List[Object]]::new()
-        return  # <-- this will skip the Begin block and will take you to the Process block
-    }
-    else {$Stop = $false}
-
     . ([scriptblock]::Create('using namespace System.Management.Automation'))
     $params = @{
         Duration  = 0
@@ -53,10 +44,6 @@ Begin {
 }
 
 Process {
-    if ($Stop) {
-        $CurrentStatus | ForEach {$All.Add($PSItem)}
-        return # <-- this will skip the Process block and take you to the End block
-    }
     $FromPipe = $MyInvocation.ExpectingInput
     if (-not $FromPipe) {
         Write-Warning 'Please use the pipeline to pass input for the status parameter'
@@ -64,16 +51,20 @@ Process {
     }
     $IsVerb = $PSItem -is [VerboseRecord]
     $IsWarn = $PSItem -is [WarningRecord]
+    $IsInfo = $PSItem -is [InformationRecord]
     if (
         ($MessageType -eq 'VerboseOnly' -and $IsVerb) -or
         ($MessageType -eq 'WarningOnly' -and $IsWarn) -or
-        ($MessageType -eq 'VerboseAndWarning' -and ($IsVerb -or $IsWarn))
+        ($MessageType -eq 'InfoOnly'    -and $IsInfo) -or
+        ($MessageType -eq 'VerboseAndWarning' -and ($IsVerb -or $IsWarn)) -or
+        ($MessageType -eq 'Any' -and ($IsVerb -or $IsWarn -or $IsInfo))
     ) {
-        $Msg = $PSItem.Message
+        $Msg = $PSItem.ToString()
     }
+
     if ($Msg.Length -gt 60) {$Msg = '{0}…' -f  $Msg.SubString(0,59)}
 
-    if (-not $IsVerb -and -not $IsWarn) {
+    if (-not $IsVerb -and -not $IsWarn -and -not $IsInfo) {
         $CurrentStatus | ForEach {$All.Add($PSItem)}
     }
     
@@ -82,17 +73,12 @@ Process {
 }
 
 End {
-    if ($Stop) {
-        Write-Output $All -NoEnumerate | ForEach {$_}
-        return
-    }
     $Job.ProgressStatus.IsDone = 'True'
     $Job | Wait-Job | Remove-Job
 
     # and pass any normal output
     if ($All.Count -gt 0) {
-        $NewOut = Write-Output $All -NoEnumerate | ForEach {$_}
-        Write-Output $NewOut
+        Write-Output $All -NoEnumerate | ForEach {$_}
     }
 }
 }
