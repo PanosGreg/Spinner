@@ -12,11 +12,11 @@ param (
 
     [uint]$Duration = 5, # <-- in seconds
     
-    [Spinner.ColorSet]$Color = 'Default',
+    [Spinner.ColorSet]$Color = ([enum]::GetNames([Spinner.ColorSet]) | Get-Random),
 
-    [Spinner.Speed]$Speed = 'Medium',
+    [Spinner.Speed]$Speed    = 'MediumFast',
 
-    [Spinner.IconSet]$Type = 'BoxSmall',
+    [Spinner.IconSet]$Type   = ([enum]::GetNames([Spinner.IconSet]) | Get-Random),
 
     [switch]$AsJob
 )

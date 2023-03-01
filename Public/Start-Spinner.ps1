@@ -24,9 +24,9 @@ param (
     [ValidateSet('VerboseOnly','WarningOnly','VerboseAndWarning','InfoOnly','Any')]
     [string]$MessageType = 'Any',
 
-    [Spinner.ColorSet]$Color = 'Default',
-    [Spinner.Speed]$Speed    = 'Medium',
-    [Spinner.IconSet]$Type   = 'BoxSmall'
+    [Spinner.ColorSet]$Color = ([enum]::GetNames([Spinner.ColorSet]) | Get-Random),
+    [Spinner.Speed]$Speed    = 'MediumFast',
+    [Spinner.IconSet]$Type   = ([enum]::GetNames([Spinner.IconSet]) | Get-Random)
 )
 
 Begin {

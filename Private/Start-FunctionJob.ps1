@@ -10,7 +10,6 @@ param (
 $block = {
     param(
         [string]$FunctionName,
-        #[string]$FunctionCode,       # <-- this is used if it's a function not module
         [System.Collections.IDictionary]$ArgTable,
         [string]$ModulePath
     )
@@ -18,12 +17,8 @@ $block = {
     Import-Module $ModulePath
 
     & $FunctionName @ArgTable
-
-    #$cmd = [scriptblock]::Create($FunctionCode)  # <-- this is used if it's a function not module
-    #& $cmd @ArgTable                             # <-- same as above
 }
 
-#$CmdDef = (Get-Command -Name $CommandName).Definition
 $Path   = $MyInvocation.MyCommand.Module.ModuleBase
 $params = @{
     ScriptBlock   = $block

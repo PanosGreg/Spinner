@@ -35,6 +35,15 @@ Write-Output $out
 }
 
 function Get-CursorPosition {
+<#
+.SYNOPSIS
+    This gets the cursor position. The advantage of doing so by using
+    the ESC[6n sequence is that it gives back the window coordinates
+    and not the buffer coordinates. Although [console]::GetCursorPosition()
+    (or even $Host.UI.RawUI.CursorPosition) works fine in Windows Terminal,
+    unfortunately it does not in the regular console (ex. cmd.exe).
+    Hence why we need this function.
+#>
     $isOnColumn = $false
     $line       = [System.Collections.Generic.List[char]]::new()
     $column     = [System.Collections.Generic.List[char]]::new()
