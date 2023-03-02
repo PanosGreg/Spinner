@@ -33,3 +33,10 @@ Other examples could be the installation of an application.
 Since installs take a bit of time, this spinner will be handy to show that the process is not stuck.
 Just make sure your install runs on the background so that it won't block the pipeline.
 
+So here's some screenshots while this runs:  
+Sample #1 - Just a basic _Proof-Of-Concept_
+![Sample Spinners #1](.\Docs\Screenshots\Sample_Spinners1.png)
+Sample #2 - While using the _Show-Spinner_ which is more like a demo
+![Sample Spinners #2](.\Docs\Screenshots\Sample_Spinners2.png)
+Wait example - Finally that's more like an actual example
+![Sample Spinners #3](.\Docs\Screenshots\Sample_Wait1.png)
