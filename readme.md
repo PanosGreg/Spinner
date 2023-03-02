@@ -4,11 +4,13 @@
 
 This module has the `Start-Spinner` function, which can be used to show an indefinite progress bar.
 This is usually handy when you don't know when a task will finish and thus you don't have any indication of its progress.
+<br>
 
+And then it also provides the `Wait-Scriptblock` function which I've used in a number of occasions. So that would be useful on its own, but can also be combined with `Start-Spinner` to provide a nice console-friendly way to wait. See the last screenshot example. You can also see that in `\Docs\How to Use the Spinner.ps1`
 
 ## How to use it
 
-The idea here is that a function will have either an object as its normal output, and perhaps some verbose output, which tells to the end-user what is happening.
+The idea here is that a function will have either an object as its normal output, and perhaps some verbose output, which tells the end-user what is happening.
 So on that basis, all you need to do is redirect that verbose and/or the warning output to the `Start-Spinner` function. 
 
 And then the spinner with show up showing those verbose messages. The end effect is that the verbose output won't take multiple lines, but instead will be refreshed on that indefinite progress bar. Once your task completes, the spinner will stop.
@@ -31,12 +33,14 @@ Write-Something -Verbose *>&1 | Start-Spinner -Activity 'Doing Stuff'
 
 Other examples could be the installation of an application.
 Since installs take a bit of time, this spinner will be handy to show that the process is not stuck.
-Just make sure your install runs on the background so that it won't block the pipeline.
-
+<br/><br/>
 So here's some screenshots while this runs:  
-Sample #1 - Just a basic _Proof-Of-Concept_
+
+_Sample #1_ - Just a basic _Proof-Of-Concept_
 ![Sample Spinners #1](./Docs/Screenshots/Sample_Spinners1.png)
-Sample #2 - While using the _Show-Spinner_ which is more like a demo
+
+_Sample #2_ - While using the _Show-Spinner_ which is more like a demo
 ![Sample Spinners #2](./Docs/Screenshots/Sample_Spinners2.png)
-Wait example - Finally that's more like an actual example
+
+_Wait example_ - Finally that's more like an actual example
 ![Sample Spinners #3](./Docs/Screenshots/Sample_Wait1.png)
