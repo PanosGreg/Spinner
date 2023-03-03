@@ -32,9 +32,9 @@ Show-Spinner -Duration 3
 
 # Another example is when using the Wait-Scriptblock function
     # the following assumes that you don't have cmd currently running
-    $block = {(Get-Process | where Name -eq cmd) -as [bool]}    
+    $block = {(Get-Process | where Name -eq cmd) -as [bool]}
     Wait-ScriptBlock -ScriptBlock $block -Verbose 4>&1 | Start-Spinner -ActivityTitle 'Run CMD' | Out-Null
-    
+
     # so now you can just wait a 10-20 seconds, to see the status messages that refresh in the spinner
-    
+
     # and then finally just run cmd to end the wait and thus the spinner as well.  

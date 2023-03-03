@@ -38,6 +38,7 @@ Begin {
         Type      = $Type
         AsJob     = $true
         Activity  = $ActivityTitle
+        ShowDone  = $false
     }
     $Job = Show-Spinner @params
     $All = [System.Collections.Generic.List[Object]]::new()

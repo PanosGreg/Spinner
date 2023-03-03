@@ -18,7 +18,9 @@ param (
 
     [Spinner.IconSet]$Type   = ([enum]::GetNames([Spinner.IconSet]) | Get-Random),
 
-    [switch]$AsJob
+    [switch]$AsJob,
+
+    [switch]$ShowDone
 )
 $PSDefaultParameterValues.'Write-Host:NoNewLine' = $true
 
@@ -100,14 +102,15 @@ while ($Timer.ElapsedMilliseconds -le $Timeout) {
 
 #region ---- After the loop
 if ($Type -like '*Small') {
-    Write-Host ($StartLn1 + $Col.Lite + ' [' + $Fill + $Col.Lite + '] ' + $Done + $Cur.DeleteEnd)
+    Write-Host ($StartLn1 + $Col.Lite + ' [' + $Fill + $Col.Lite + '] ')
 }
 elseif ($Type -like '*Large') {
     Write-Host (
         $StartLn1 + $Col.Lite + ' ║' + $Fill + $Col.Lite + '║ ' +
-        $StartLn2 + $Col.Lite + ' ║' + $Fill + $Col.Lite + '║ ' + $Done + $Cur.DeleteEnd
+        $StartLn2 + $Col.Lite + ' ║' + $Fill + $Col.Lite + '║ '
     )
 }
+if ($ShowDone) {$Done + $Cur.DeleteEnd}
 #endregion
 
 Write-Host ($Cur.Show + $Col.None)
