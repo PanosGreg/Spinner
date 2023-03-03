@@ -92,7 +92,7 @@ if ($AsJob) {
 <br><br>
 
 ---
-### **How to have the using statement anywhere and also make it dynamic with variables
+### **How to have the using statement anywhere and also make it dynamic with variables**
 Normally the using statement must be placed at the very top of your code.  
 But you can overcome this limitation with the following syntax.
 ```PowerShell
