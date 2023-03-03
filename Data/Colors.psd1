@@ -12,6 +12,7 @@
     Yellow      = @{R = 240 ; G = 230 ; B = 140}
     Red         = @{R = 231 ; G =  72 ; B =  86}
     Magenta     = @{R = 254 ; G = 140 ; B = 255}
+    Gray        = @{R = 128 ; G = 128 ; B = 128}
 
     LiteBlue    = @{R = 153 ; G = 204 ; B = 255}
     LiteGreen   = @{R = 139 ; G = 231 ; B = 139}
@@ -19,6 +20,7 @@
     LiteYellow  = @{R = 248 ; G = 248 ; B =   0}
     LiteRed     = @{R = 232 ; G =  82 ; B =  83}
     LiteMagenta = @{R = 247 ; G = 179 ; B = 247}
+    LiteGray    = @{R = 192 ; G = 192 ; B = 176}
 
     DarkBlue    = @{R =  68 ; G = 114 ; B = 196}
     DarkGreen   = @{R =   0 ; G = 128 ; B =   0}
@@ -26,4 +28,5 @@
     DarkYellow  = @{R = 148 ; G = 148 ; B =   0}
     DarkRed     = @{R = 124 ; G =  35 ; B =  35}
     DarkMagenta = @{R = 153 ; G =  51 ; B = 255}
+    DarkGray    = @{R =  80 ; G =  80 ; B =  80}
 }

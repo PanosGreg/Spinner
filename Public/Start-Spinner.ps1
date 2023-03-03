@@ -28,7 +28,8 @@ param (
     [Spinner.Speed]$Speed    = 'MediumFast',
     [Spinner.IconSet]$Type   = ([enum]::GetNames([Spinner.IconSet]) | Get-Random),
 
-    [switch]$CollectErrors
+    [switch]$CollectErrors,
+    [switch]$HideType
 )
 
 Begin {
@@ -73,9 +74,14 @@ Process {
         }
         else {$CurrentStatus | ForEach {$All.Add($PSItem)}} 
     }
-    
+    if     ($IsVerb) {$MsgType = 'VERB'}
+    elseif ($IsWarn) {$MsgType = 'WARN'}
+    elseif ($IsInfo) {$MsgType = 'INFO'}
+
     # finally update the status on the spinner
     $Job.ProgressStatus.Message = $Msg
+    if ($HideType) {$Job.ProgressStatus.Type = 'NONE'}
+    else           {$Job.ProgressStatus.Type = $MsgType}
 }
 
 End {

@@ -20,6 +20,7 @@ namespace Spinner {
         Yellow,
         Red,
         Magenta,
+        Gray
     }
 
     public enum CursorAction {

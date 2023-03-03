@@ -29,6 +29,7 @@ if (-not $HasStatus) {
     $Status         = [System.Collections.Concurrent.ConcurrentDictionary[string,string]]::new()
     $Status.Message = Get-RandomQuote -OnlyVerb
     $Status.IsDone  = [bool]::FalseString
+    $Status.Type    = 'NONE'
     [void]$PSBoundParameters.Add('Status',$Status)
 }
 
@@ -44,11 +45,14 @@ if ($AsJob) {
     return (Start-FunctionJob @params)
 } #if AsJob
 
-$Col   = Get-ColorSet $Color  # <-- $Col.Norm , $Col.Lite , $Col.Dark, $Col.None
-$Cur   = Get-CursorCode       # <-- all VT100 cursor escape sequences
-$PosY  = (Get-CursorPosition).Y
-$PosX  = $Activity.Length+1
-$Iset  = Get-IconSet $Type
+$Col  = Get-ColorSet $Color  # <-- $Col.Norm , $Col.Lite , $Col.Dark, $Col.None
+$Gray = Get-ColorSet Gray
+$Yell = Get-ColorSet Yellow
+$Blue = Get-ColorSet Blue
+$Cur  = Get-CursorCode       # <-- all VT100 cursor escape sequences
+$PosY = (Get-CursorPosition).Y
+$PosX = $Activity.Length+1
+$Iset = Get-IconSet $Type
 if ($Type -like '*Small') {
     $ActivPos   = Set-CursorPosition 1     $PosY   # <-- the cursor position of the start of the Activity string
     $StartLn1   = Set-CursorPosition $PosX $PosY
@@ -69,32 +73,40 @@ elseif ($Type -like '*Large') {
     $IconsLine1 = $Iset.Line1
     $IconsLine2 = $Iset.Line2
 }
-$Fill  = $Col.Dark + ($Iset.Fill)*$Iset.Line1[0].Length
-$Done  = $Col.Lite + $Cur.Italic + 'D O N E' + $Cur.NoItalic + $Col.None
-$Activ = $ActivPos + $Cur.Underline + $Activity + $Cur.NoUnderline
+$Fill   = $Col.Dark + ($Iset.Fill)*$Iset.Line1[0].Length
+$Done   = $Col.Lite + $Cur.Italic + 'D O N E' + $Cur.NoItalic + $Col.None
+$Activ  = $ActivPos + $Cur.Underline + $Activity + $Cur.NoUnderline
+$OpenTB = $Gray.Norm + '[' + $Col.None   # <-- Open Type Bracket
+$ClosTB = $Gray.Norm + '] ' + $Col.None  # <-- Close Type Bracket
 
 if ($Duration -eq 0) {[long]$Timeout = [uint]::MaxValue}
 else                 {[long]$Timeout = $Duration * 1000}
 
-$i = 0
+$i = 0 ; $SB = [System.Text.StringBuilder]::new()
 $Timer = [System.Diagnostics.Stopwatch]::StartNew()
 #region ---- The Loop
 Write-Host ($Cur.Hide + $Activ)
 while ($Timer.ElapsedMilliseconds -le $Timeout) {
+    if     ($Status.Type -eq 'NONE') {[void]$SB.Clear()}
+    elseif ($Status.Type -eq 'VERB') {[void]$SB.Append($OpenTB + $Blue.Lite + $Status.Type + $ClosTB)}
+    elseif ($Status.Type -eq 'WARN') {[void]$SB.Append($OpenTB + $Yell.Lite + $Status.Type + $ClosTB)}
+    elseif ($Status.Type -eq 'INFO') {[void]$SB.Append($OpenTB + $Gray.Lite + $Status.Type + $ClosTB)}
+
     if ($Type -like '*Small') {
-        Write-Host ($Col.Norm + 
-            $StartLn1 + ' [' + $Icons[$i % $Icons.Length] + '] ' +
-            $Cur.Italic + $Status.Message + $Cur.NoItalic + $Cur.DeleteEnd
+        Write-Host ($Col.Norm +
+            $StartLn1 + ' [' + $Icons[$i % $Icons.Length] + '] ' + $SB.ToString() +
+            $Col.Norm + $Cur.Italic + $Status.Message + $Cur.NoItalic + $Cur.DeleteEnd
         )
     }
     elseif ($Type -like '*Large') {
         Write-Host ($Col.Norm +
             $StartLn1 + ' ║' + $IconsLine1[$i % $IconsLine1.Length] + '║ ' +
-            $StartLn2 + ' ║' + $IconsLine2[$i % $IconsLine2.Length] + '║ ' +
-            $Cur.Italic + $Status.Message + $Cur.NoItalic + $Cur.DeleteEnd
+            $StartLn2 + ' ║' + $IconsLine2[$i % $IconsLine2.Length] + '║ ' + $SB.ToString() + 
+            $Col.Norm + $Cur.Italic + $Status.Message + $Cur.NoItalic + $Cur.DeleteEnd
         )
     }
     $i++
+    [void]$SB.Clear()
     Start-Sleep -Milliseconds $Speed.value__   # <-- the Interval
     if ($Status.IsDone -eq 'True') {break}
 }

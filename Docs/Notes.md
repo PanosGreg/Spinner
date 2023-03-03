@@ -92,6 +92,22 @@ if ($AsJob) {
 <br><br>
 
 ---
+### **How to have the using statement anywhere and also make it dynamic with variables
+Normally the using statement must be placed at the very top of your code.  
+But you can overcome this limitation with the following syntax.
+```PowerShell
+. ([scriptblock]::Create('using namespace System.Management.Automation'))
+# this example uses the System.Management.Automation namespace as an example
+```
+Essentially you are dot sourcing a scriptblock and you can do so anywhere in your code.  
+Moreover we can even put a variable into that scriptblock to make the using statemet dynamic.
+```PowerShell
+$NameSpace = 'System.Management.Automation'
+. ([scriptblock]::Create("using namespace $NameSpace"))
+```
+<br><br>
+
+---
 ### **How to validate the concurrent dictionary has the expected properties**
 This is needed in order to pass the appropriate object to the `Start-Spinner` function.
 The concurrent dictionaty is used to pass data into the job which runs on a different thread.
