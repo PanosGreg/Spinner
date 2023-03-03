@@ -4,7 +4,7 @@
 
 @{
 RootModule        = 'Spinner.psm1'
-ModuleVersion     = '1.3.1'
+ModuleVersion     = '1.4.0'
 GUID              = '0b242b1e-b061-49a0-914d-dc9daa4f4617'
 Author            = 'Panos Grigoriadis'
 CompanyName       = 'No Company'
@@ -21,7 +21,7 @@ PrivateData       = @{
         Tags         = 'PowerShell', 'ProgressBar'
         ProjectUri   = 'https://github.com/...'
         ReleaseNotes = 'This module contains helper functions for progress bars.'
-        LastUpdate   = '02 Mar 2023'
+        LastUpdate   = '03 Mar 2023'
     }
     DataFolder = '\Data'
 }

@@ -26,19 +26,21 @@ param (
 
     [Spinner.ColorSet]$Color = ([enum]::GetNames([Spinner.ColorSet]) | Get-Random),
     [Spinner.Speed]$Speed    = 'MediumFast',
-    [Spinner.IconSet]$Type   = ([enum]::GetNames([Spinner.IconSet]) | Get-Random)
+    [Spinner.IconSet]$Type   = ([enum]::GetNames([Spinner.IconSet]) | Get-Random),
+
+    [switch]$CollectErrors
 )
 
 Begin {
     . ([scriptblock]::Create('using namespace System.Management.Automation'))
     $params = @{
-        Duration  = 0
-        Color     = $Color
-        Speed     = $Speed
-        Type      = $Type
-        AsJob     = $true
-        Activity  = $ActivityTitle
-        ShowDone  = $false
+        Duration      = 0
+        Color         = $Color
+        Speed         = $Speed
+        Type          = $Type
+        AsJob         = $true
+        Activity      = $ActivityTitle
+        ShowDone      = $false
     }
     $Job = Show-Spinner @params
     $All = [System.Collections.Generic.List[Object]]::new()
@@ -50,9 +52,10 @@ Process {
         Write-Warning 'Please use the pipeline to pass input for the status parameter'
         return
     }
-    $IsVerb = $PSItem -is [VerboseRecord]
-    $IsWarn = $PSItem -is [WarningRecord]
-    $IsInfo = $PSItem -is [InformationRecord]
+    $IsVerb  = $PSItem -is [VerboseRecord]
+    $IsWarn  = $PSItem -is [WarningRecord]
+    $IsInfo  = $PSItem -is [InformationRecord]
+    $IsError = $PSItem -is [ErrorRecord] -or $PSItem -is [System.Exception]
     if (
         ($MessageType -eq 'VerboseOnly' -and $IsVerb) -or
         ($MessageType -eq 'WarningOnly' -and $IsWarn) -or
@@ -62,11 +65,13 @@ Process {
     ) {
         $Msg = $PSItem.ToString()
     }
-
     if ($Msg.Length -gt 60) {$Msg = '{0}…' -f  $Msg.SubString(0,59)}
 
     if (-not $IsVerb -and -not $IsWarn -and -not $IsInfo) {
-        $CurrentStatus | ForEach {$All.Add($PSItem)}
+        if (-not $CollectErrors -and $IsError) {
+            Write-Error -ErrorRecord $PSItem
+        }
+        else {$CurrentStatus | ForEach {$All.Add($PSItem)}} 
     }
     
     # finally update the status on the spinner

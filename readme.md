@@ -17,18 +17,28 @@ And then the spinner with show up showing those verbose messages. The end effect
 
 Also as a best practice, it's good to say what is the main activity, so that it will be shown along with the spinner.
 
+## Remarks
+
+If there is an error while running your function, then `Start-Spinner` will show it on the console immediately. Which will break the spinner visual unfortunately. That means that even if you redirect everything to `Start-Spinner`, the errors won't be passed as messages to the progress status.
+Alternatively if you want to collect the errors as part your output, then you can use the `-CollectErrors` switch which will do that.
+
 ## Example #1
 
 ```PowerShell
 function Write-Something {
     [cmdletbinding()]
     param ()
-    Write-Verbose 'vvv' ; sleep 1 ; Write-Output 'aaa' ; sleep 1
-    Write-Verbose 'VVV' ; sleep 1 ; Write-Output 'bbb' ; sleep 1
+    Write-Verbose 'vvv' ; sleep 1 ; Write-Output 'aaa' ; sleep 1 ; Write-Error 'eee' ; sleep 1
+    Write-Verbose 'VVV' ; sleep 1 ; Write-Output 'bbb' ; sleep 1 ; Write-Error 'EEE' ; sleep 1
+    [pscustomobject] @{Name = 'aaa' ; Size = 100}  # <-- normal output
 }
 
-Write-Something -Verbose *>&1 | Start-Spinner -Activity 'Doing Stuff'
+$obj = Write-Something -Verbose *>&1 | Start-Spinner -Activity 'Doing Stuff' -CollectErrors
+$obj  # <-- this will show the psobject as well as the errors
 
+# or alternatively if you want to see the errors as they happen
+$obj = Write-Something -Verbose *>&1 | Start-Spinner -Activity 'Doing Stuff' -Type DotsSmall
+$obj # <-- this will only show the psobject, since the errors were shown during the spinner output
 ```
 
 Other examples could be the installation of an application.
