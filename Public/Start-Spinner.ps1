@@ -74,13 +74,13 @@ Process {
         }
         else {$CurrentStatus | ForEach {$All.Add($PSItem)}} 
     }
-    if     ($IsVerb) {$MsgType = 'VERB'}
-    elseif ($IsWarn) {$MsgType = 'WARN'}
-    elseif ($IsInfo) {$MsgType = 'INFO'}
+    if     ($IsVerb) {$MsgType = Write-MessageType VERB}
+    elseif ($IsWarn) {$MsgType = Write-MessageType WARN}
+    elseif ($IsInfo) {$MsgType = Write-MessageType INFO}
 
     # finally update the status on the spinner
     $Job.ProgressStatus.Message = $Msg
-    if ($HideType) {$Job.ProgressStatus.Type = 'NONE'}
+    if ($HideType) {$Job.ProgressStatus.Type = Write-MessageType NONE}
     else           {$Job.ProgressStatus.Type = $MsgType}
 }
 

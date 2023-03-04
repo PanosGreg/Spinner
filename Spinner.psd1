@@ -4,7 +4,7 @@
 
 @{
 RootModule        = 'Spinner.psm1'
-ModuleVersion     = '1.5.0'
+ModuleVersion     = '1.5.1'
 GUID              = '0b242b1e-b061-49a0-914d-dc9daa4f4617'
 Author            = 'Panos Grigoriadis'
 CompanyName       = 'No Company'

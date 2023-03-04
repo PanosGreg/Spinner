@@ -19,8 +19,11 @@ Also as a best practice, it's good to say what is the main activity, so that it 
 
 ## Remarks
 
-If there is an error while running your function, then `Start-Spinner` will show it on the console immediately. Which will break the spinner visual unfortunately. That means that even if you redirect everything to `Start-Spinner`, the errors won't be passed as messages to the progress status.
-Alternatively if you want to collect the errors as part your output, then you can use the `-CollectErrors` switch which will do that.
+If there is an error while running your function, then `Start-Spinner` will show it on the console immediately. Which will break the spinner visual unfortunately. That means that even if you redirect everything to `Start-Spinner`, the errors won't be passed as messages to the progress status.  
+Alternatively if you want to collect the errors as part of your output, then you can use the `-CollectErrors` switch which will do that, provided that you send the Error stream to it.
+Another note is that this module and its corresponding function(s) do not overwrite the native `Write-Progress`, `ProgressPreference` or the `Progress stream`, in case there's a confusion on that.  
+Finally the `Start-Spinner` is meant to be used interactively in the console and not in a scripted way.
+
 
 ## Example #1
 
