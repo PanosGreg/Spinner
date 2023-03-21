@@ -27,8 +27,14 @@
     NoUnderline = [char]27 + '[24m'
     Italic      = [char]27 + '[3m'
     NoItalic    = [char]27 + '[23m'
+    StrikeThru  = [char]27 + '[9m'
+    NoStrikThru = [char]27 + '[29m'
     Blink       = [char]27 + '[5m'
     NoBlink     = [char]27 + '[25m'
     Reset       = [char]27 + '[!p'
     GetPosition = [char]27 + '[6n'  # <-- this will give the X,Y cursor position as an escape sequence
 }
+
+
+# most of the above escape sequences are also found in the default variable $PSStyle on PowerShell 7.2+
+# but in PS 5.1 this does not exist, so we're using the above hashtable
